@@ -51,15 +51,19 @@ public class DistinctiveWordFinder {
 	 */
 	private void countWordsInOneFile(File file1, AllWordsCounter counter) throws IOException {
 		BufferedReader r = new BufferedReader(new FileReader(file1));
-		while (true) {
-			String line = r.readLine();
-			if (line == null) {
+        int tallies = 0;
+		while (true)
+        {
+            String line = r.readLine();
+            if (line == null) {
 				break;
 			}
             for (String w : splitLine(line)) {
                 counter.count(w);
+                tallies ++;
             }
-		}
+        }
+        System.out.println(tallies);
 	}
 	
 	/**
@@ -68,19 +72,21 @@ public class DistinctiveWordFinder {
 	 * words.
 	 */
 	private void findDistinctive() {
-        // TODO: initialize to words in primary counter
-        String words[] = null;
+        // TODO: initialize to words in primary counter-
+        String words[] = new String[primaryCounts.getNumWords()]; //changed from it being null;
+        // made an array words with the array size being the number of words in primary counter
 
         // This array will be used to sort the word scores;
         WordScore scores[] = new WordScore[words.length];
 
         for (int i = 0; i < words.length; i++) {
-            String word = words[i];
+            String word = words[i]; //set variable "word" to the word with index i from the String array above.
 
             // TODO: correctly get the primary and secondary counts from
             // the primaryCounts and secondaryCounts instance variables.
-            int primary = 0;
-            int secondary = 0;
+
+            int primary = primaryCounts.getCount(word);
+            int secondary = secondaryCounts.getCount(word);
 
             // Calculate the interestingness score and prepare it in the output queue
             double score = getDistinctiveScore(primary, secondary);
@@ -106,7 +112,12 @@ public class DistinctiveWordFinder {
     private double getDistinctiveScore(int primaryCount, int secondaryCount) {
         // TODO: return something reasonable.
         // A higher value means more "distinctive".
-        return 0.0;
+        double distinctiveScore = 0;
+        for(int i = 0; i < primaryCount; i++)
+        {
+            distinctiveScore = (primaryCount/(secondaryCount + primaryCount + 10));
+        }
+        return distinctiveScore;
     }
 
 	/**
@@ -119,8 +130,8 @@ public class DistinctiveWordFinder {
 	}
 	
 	public static void main(String args[]) throws IOException {
-        File f1 = new File("dat/palin.txt");
-        File f2 = new File("dat/biden.txt");
+        File f1 = new File("C://Users//hp//Documents//Freshman CourseWork//Object Oriented//word-counter//dat//palin.txt");
+        File f2 = new File("C://Users//hp//Documents//Freshman CourseWork//Object Oriented//word-counter//dat//biden.txt");
 
 		DistinctiveWordFinder finder = new DistinctiveWordFinder();
 		finder.countWords(f1, f2);
